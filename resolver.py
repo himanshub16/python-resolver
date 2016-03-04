@@ -20,6 +20,7 @@ if not (x == "y" or x == "Y"):
 	print "Make sure the above condition is satisfied!"
 	exit(1)
 
+# this commented part is intended to debug the files in a given location
 '''filelist = ''
 if not (x=="y" or x=="Y"):
 	location = input("Enter the location of the directory : ")
