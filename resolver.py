@@ -20,54 +20,69 @@ if not (x == "y" or x == "Y"):
 	print "Make sure the above condition is satisfied!"
 	exit(1)
 
-# this commented part is intended to debug the files in a given location
-'''filelist = ''
-if not (x=="y" or x=="Y"):
-	location = input("Enter the location of the directory : ")
-	filelist = os.listdir(location)
-	os.chdir(location)
-else:
-	filelist = os.listdir(os.getcwd()) 
-'''
+# this part scans for python files recursively
+filelist = []
+for root, dirname, filename in os.walk(os.getcwd()):
+	for var in filename:
+		if var.endswith('.py'):
+			filelist.append(os.path.join(root, var))
 
-# get list of files
-filelist = os.listdir(os.getcwd())
-for file in filelist:
-	if not(file.endswith('.py')):
-		filelist.remove(file)
-filelist.remove(main.__file__)
+#filelist.remove(main.__file__)
 
 modulelist = list() # list of modules to be checked for
 for file in filelist:
 	f = open(file, 'r')
-	print 'evaluating file ', file
+	if file.endswith(main.__file__):
+		continue
+	print 'evaluating file: ', file
 	content = f.readlines()
 	lines = list()
 	for line in content:
 		var = line.strip()
-		if var.startswith('import'):
-			tmp = var.replace('import','').split(',')
-			for item in tmp:
-				if 'as' in 'item':
-					modulelist.append((item.split('as'))[0])
-				else:
-					modulelist.append(item.strip())
-# now, we have the list of lines containing the import keyword
-# the variable modulelist holds that
+		if var.startswith('import') or var.startswith('from'):
+			try:
+				var = var.replace(',','')
+				var = var.split()
+				if 'as' in var:
+					var.remove(var[var.index('as')+1])
+				if 'from' in var:
+					var.remove(var[var.index('from')+3])
+				if 'import' in var:
+					var.remove('import')
+				if 'as' in var:
+					var.remove('as')
+				if 'from' in var:
+					var.remove('from')
+				
+				for modname in var:
+					modulelist.append(modname)
+			except ValueError:
+				pass
+	f.close()
+	
+
+# the variable modulelist holds the names of modules imported somewhere
 
 # removing duplicates from the list of modules obtained
 modulelist = list(set(modulelist))
-
+# print modulelist
+print '=========================================================='
+print "Got names of modules, checking each one of them"
+choice = raw_input("Do you want to download any modules that are unavailable (requires pip)? (y/n) ")
+print
 for modulename in modulelist:
 	var = 'import ' + modulename
 	try:
 		exec var
 	except ImportError:
 		print '**"', var.replace('import',''), '" cannot be imported. **'
+		if choice is 'y' or choice is 'Y':
+			os.system('pip install ' + var.replace('import',''))
 	else:
 		print var.replace('import',''), 'imported successfully.'
 		pass
 
+print
 print 'End of program. If you like it, you can star it at "https://github.com/himanshushekharb16/python-resolver/"'
 print "Thanks for using! "
 exit(0)
