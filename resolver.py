@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 #
 # Author : Himanshu Shekhar < https://github.com/himanshushekharb16 >
 # program to find if any python packages do not exist on a system
@@ -6,18 +6,22 @@
 
 # It checks for all the files/source codes for required packages and then check whether they are installed in the system.
 
+# Ported to python 3
+# Author: Ramiz Muharemovic
+# https://github.com/muharemovic
+
 try:
 	import sys, os
 	import __main__ as main
 except ImportError:
-	print "The sys and os modules could not be loaded. Please check you python installation."
+	print ("The sys and os modules could not be loaded. Please check you python installation.")
 	exit(1)
 
-print "Is this script in the required directory? (y/n) ", 
-x = raw_input()
+print ("Is this script in the required directory? (y/n) ")
+x = input().lower()
 
-if not (x == "y" or x == "Y"):
-	print "Make sure the above condition is satisfied!"
+if not (x == "y"):
+	print ("Make sure the above condition is satisfied!")
 	exit(1)
 
 # this part scans for python files recursively
@@ -34,14 +38,14 @@ for file in filelist:
 	f = open(file, 'r')
 	if file.endswith(main.__file__):
 		continue
-	print 'evaluating file: ', file
+	print ('evaluating file: ', file)
 	content = f.readlines()
-	lines = list()
+
 	for line in content:
 		var = line.strip()
 		if var.startswith('import') or var.startswith('from'):
 			try:
-				var = var.replace(',','')
+				var = var.replace(',','\n')
 				var = var.split()
 				if 'as' in var:
 					var.remove(var[var.index('as')+1])
@@ -53,36 +57,35 @@ for file in filelist:
 					var.remove('as')
 				if 'from' in var:
 					var.remove('from')
-				
+
 				for modname in var:
 					modulelist.append(modname)
 			except ValueError:
 				pass
 	f.close()
-	
+
 
 # the variable modulelist holds the names of modules imported somewhere
 
 # removing duplicates from the list of modules obtained
 modulelist = list(set(modulelist))
 # print modulelist
-print '=========================================================='
-print "Got names of modules, checking each one of them"
-choice = raw_input("Do you want to download any modules that are unavailable (requires pip)? (y/n) ")
-print
+print ('==========================================================')
+print ("Got names of modules, checking each one of them")
+choice = input("Do you want to download any modules that are unavailable (requires pip)? (y/n) ").lower()
+print()
 for modulename in modulelist:
 	var = 'import ' + modulename
 	try:
-		exec var
+		exec (var)
 	except ImportError:
-		print '**"', var.replace('import',''), '" cannot be imported. **'
-		if choice is 'y' or choice is 'Y':
+		print ('**"', var.replace('import',''), '" cannot be imported. **')
+		if choice == 'y':
 			os.system('pip install ' + var.replace('import',''))
 	else:
-		print var.replace('import',''), 'imported successfully.'
+		print (var.replace('import',''), 'imported successfully.')
 		pass
 
-print
-print 'End of program. If you like it, you can star it at "https://github.com/himanshushekharb16/python-resolver/"'
-print "Thanks for using! "
+print()
+print ("Thanks for using! ")
 exit(0)
