@@ -3,5 +3,6 @@ Checks you project for possible import errors.
 Yeah! Sort of debugger.
 
 # How to use?
-Just run the script, : python resolver.py
-It is made on Python 2.7, so don't use python3
+Just run the script, : 
+For Python 2.* : python resolver2.py
+For Python 3.* : python3 resolver3.py
