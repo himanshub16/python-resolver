@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python2
 #
 # Author : Himanshu Shekhar < https://github.com/himanshushekharb16 >
 # program to find if any python packages do not exist on a system
