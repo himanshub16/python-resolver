@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #
-# Author : Himanshu Shekhar < https://github.com/himanshushekharb16 >
+# Author : Himanshu Shekhar < https://github.com/himanshub16 >
 # program to find if any python packages do not exist on a system
 # this ensures that the python script do not fail because of missing modules
 
